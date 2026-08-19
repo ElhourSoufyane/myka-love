@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For My Love <3</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #fbc2eb 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+    text-align: center;
+    color: #5a3a4a;
+  }
+  h1 {
+    font-size: 3rem;
+    margin: 20px;
+    text-shadow: 2px 2px 0 #fff, 4px 4px 10px rgba(0,0,0,0.15);
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+  }
+  .heart {
+    font-size: 2rem;
+    display: inline-block;
+    animation: beat 1s infinite;
+  }
+  @keyframes beat {
+    0%,100% { transform: scale(1); }
+    25% { transform: scale(1.3); }
+    50% { transform: scale(1); }
+    75% { transform: scale(1.2); }
+  }
+  .subtitle {
+    font-size: 1.3rem;
+    margin-bottom: 30px;
+    font-style: italic;
+  }
+  .card {
+    background: rgba(255,255,255,0.85);
+    border-radius: 20px;
+    padding: 25px;
+    margin: 20px auto;
+    max-width: 600px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  }
+  .card h2 { margin-bottom: 15px; color: #c2185b; }
+  .reasons { text-align: left; padding-left: 20px; }
+  .reasons li { margin: 8px 0; }
+  button {
+    background: #ff4d6d;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    border-radius: 30px;
+    cursor: pointer;
+    margin: 10px;
+    font-family: inherit;
+    transition: transform 0.15s, background 0.2s;
+  }
+  button:hover { transform: scale(1.08); background: #e63956; }
+  button:active { transform: scale(0.95); }
+  #gameArea {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    height: 360px;
+    margin: 0 auto;
+    background: linear-gradient(to bottom, #ffe0ec, #fff);
+    border-radius: 15px;
+    overflow: hidden;
+    border: 3px dashed #ff8fab;
+  }
+  #score { font-size: 1.2rem; margin: 10px; font-weight: bold; }
+  .target {
+    position: absolute;
+    font-size: 2rem;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.1s;
+  }
+  .target:hover { transform: scale(1.2); }
+  .joke {
+    font-size: 1.1rem;
+    margin: 15px;
+    min-height: 40px;
+    font-style: italic;
+  }
+  .floating {
+    position: fixed;
+    font-size: 1.8rem;
+    pointer-events: none;
+    animation: floatUp 6s linear forwards;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(0) rotate(0); opacity: 1; }
+    100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+  }
+  .compliment {
+    font-size: 1.4rem;
+    color: #d81b60;
+    margin: 15px;
+    min-height: 30px;
+    font-weight: bold;
+  }
+  footer { margin: 30px; font-size: 0.9rem; opacity: 0.8; }
+  .secret {
+    margin-top: 15px;
+    font-size: 0.85rem;
+    color: #888;
+  }
+</style>
+</head>
+<body>
+  <h1>I Love You Myka :* <span class="heart">❤️</span></h1>
+  <p class="subtitle">This whole website exists just for YOU. 💕</p>
+
+  <div class="card">
+    <h2>Why I Love You 💗</h2>
+    <ul class="reasons">
+      <li>Your smile makes my whole day better.</li>
+      <li>You laugh at my dumb jokes (most of them).</li>
+      <li>You're smarter than me and I'm okay with it.</li>
+      <li>You make ordinary stuff feel special.</li>
+      <li>You + me = the best team ever.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Compliments 🌸</h2>
+    <p class="compliment" id="compliment">Click the button for a compliment!</p>
+    <button onclick="newCompliment()">Say something sweet 🍬</button>
+  </div>
+
+  <div class="card">
+    <h2>Catch my Hearts Game 🎮</h2>
+    <p id="score">Score: 0 | Time: 20s</p>
+    <button onclick="startGame()">Start Game ▶️</button>
+    <div id="gameArea"></div>
+    <p class="secret">Tip: faster hearts = more points... and bragging rights.</p>
+  </div>
+
+  <div class="card">
+    <h2>Funny Stuff 😂</h2>
+    <p class="joke" id="joke">Press the button for a cheesy love joke!</p>
+    <button onclick="newJoke()">Tell me a joke 🤡</button>
+  </div>
+
+  <div class="card">
+    <h2>The Big Button 🔴</h2>
+    <p>Press it. Trust me.</p>
+    <div id="btnRow" style="position: relative; min-height: 80px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;">
+      <button id="yesBtn" onclick="bigButton()" style="transition: transform 0.2s, font-size 0.2s, padding 0.2s;">PRESS ME 💥</button>
+      <button id="noBtn" onclick="runAway()" style="background: #888; transition: left 0.15s, top 0.15s;">No 😒</button>
+    </div>
+    <p id="bigMsg" class="compliment"></p>
+    <p id="noMsg" class="compliment" style="color:#888;"></p>
+  </div>
+
+  <footer>Made with ❤️, bad jokes, and way too much CSS.</footer>
+
+<script>
+  const compliments = [
+    "You're the peanut butter to my jelly. 🍞",
+    "If you were a triangle you'd be acute one. 🔺",
+    "You light up my world like nobody else. ✨",
+    "My WiFi may be slow but my love for you is buffering-free. 📶",
+    "You're my favorite notification. 🔔",
+    "Even my coffee is jealous of how warm you make me feel. ☕",
+    "You're the reason I look at my phone and smile like an idiot. 📱",
+    "I love you more than sleep — and that's saying a LOT. 😴",
+  ];
+  function newCompliment() {
+    const c = document.getElementById('compliment');
+    c.textContent = compliments[Math.floor(Math.random() * compliments.length)];
+    const btn = event.currentTarget;
+    if (!btn.dataset.original) btn.dataset.original = btn.textContent;
+    btn.textContent = btn.dataset.original + ' again';
+    spawnHeart();
+  }
+
+  const jokes = [
+    "Are you a magician? Because whenever I look at you, everyone else disappears. 🎩",
+    "Did you fall from heaven? Because so did Satan, just saying. 😇",
+    "I'm not a photographer, but I can picture us together. 📸",
+    "Do you have a map? I keep getting lost in your eyes. 🗺️",
+    "Are you French? Because Eiffel for you. 🗼",
+    "I'd say God bless you, but it looks like He already did. 🙏",
+    "Are you a parking ticket? Because you've got 'FINE' written all over you. 🚗",
+    "If you were a vegetable, you'd be a cute-cumber. 🥒",
+  ];
+  function newJoke() {
+    document.getElementById('joke').textContent = jokes[Math.floor(Math.random() * jokes.length)];
+    const btn = event.currentTarget;
+    if (!btn.dataset.original) btn.dataset.original = btn.textContent;
+    btn.textContent = btn.dataset.original + ' again';
+    spawnHeart();
+  }
+
+  function spawnHeart() {
+    const h = document.createElement('div');
+    h.className = 'floating';
+    h.textContent = ['❤️','💖','💕','💗','💓','💘'][Math.floor(Math.random()*6)];
+    h.style.left = Math.random() * 100 + 'vw';
+    h.style.bottom = '-30px';
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 6000);
+  }
+
+  // Game
+  let score = 0, timeLeft = 20, gameTimer = null, spawnTimer = null, playing = false;
+  function startGame() {
+    if (playing) return;
+    playing = true;
+    score = 0; timeLeft = 20;
+    const area = document.getElementById('gameArea');
+    area.innerHTML = '';
+    updateScore();
+    gameTimer = setInterval(() => {
+      timeLeft--;
+      updateScore();
+      if (timeLeft <= 0) endGame();
+    }, 1000);
+    spawnLoop();
+  }
+  function spawnLoop() {
+    if (!playing) return;
+    spawnTarget();
+    spawnTimer = setTimeout(spawnLoop, 600 + Math.random() * 500);
+  }
+  function spawnTarget() {
+    const area = document.getElementById('gameArea');
+    const t = document.createElement('div');
+    t.className = 'target';
+    t.textContent = ['❤️','💖','💕','💗'][Math.floor(Math.random()*4)];
+    const size = 30 + Math.random() * 30;
+    t.style.fontSize = size + 'px';
+    t.style.left = Math.random() * (area.clientWidth - size) + 'px';
+    t.style.top = Math.random() * (area.clientHeight - size) + 'px';
+    t.onclick = () => { score++; updateScore(); t.remove(); spawnHeart(); };
+    area.appendChild(t);
+    setTimeout(() => { if (t.parentNode) t.remove(); }, 1500);
+  }
+  function updateScore() {
+    document.getElementById('score').textContent = `Score: ${score} | Time: ${timeLeft}s`;
+  }
+  function endGame() {
+    playing = false;
+    clearInterval(gameTimer);
+    clearTimeout(spawnTimer);
+    const area = document.getElementById('gameArea');
+    area.innerHTML = `<div style="padding-top:140px;font-size:1.4rem;font-weight:bold;">Game Over! 💖<br>Score: ${score}<br>${score >= 15 ? "WOW you're a heart-catcher! 😍" : score >= 8 ? "Nice! She'd be proud. 💕" : "Cute. Try again for her. 💪"}</div>`;
+  }
+
+  function bigButton() {
+    const msgs = [
+      "I love you to the moon and back... and maybe to the fridge too. 🌙🍔",
+      "You're my favorite human. (Don't tell my dog.) 🐶",
+      "If loving you is wrong, I don't want to be right. Also I'm never wrong. 😎",
+      "You + Me = Forever. (Math checks out, I think.) 🧮",
+      "I love you even when I'm hungry. That's TRUE love. 🍕",
+      "Kanbghik bzaf 🇲🇦 — (I love you so much, in Darija)",
+      "Mahal kita 🇵🇭 — (I love you, in Tagalog)",
+      "Ang ganda mo talaga, parang hindi ka na nangangailangan ng filter. Ikaw na ang original masterpiece. �🇵🇭",
+      "Kahit ang araw nagtatago kapag nakangiti ka — kasi mas maliwanag ka pa sa kanya. Mahal na mahal kita. ☀️🇵🇭",
+    ];
+    document.getElementById('bigMsg').textContent = msgs[Math.floor(Math.random() * msgs.length)];
+    // Reset PRESS ME button to original size
+    const yesBtn = document.getElementById('yesBtn');
+    yesBtn.style.transform = 'scale(1)';
+    yesBtn.style.fontSize = '1rem';
+    yesBtn.style.padding = '12px 24px';
+    // Reset No button: back to flex flow so it sits beside PRESS ME, never on top
+    const noBtn = document.getElementById('noBtn');
+    noBtn.style.position = '';
+    noBtn.style.left = '';
+    noBtn.style.top = '';
+    noCount = 0;
+    document.getElementById('noMsg').textContent = '';
+    // Add "again" to PRESS ME label
+    if (!yesBtn.dataset.original) yesBtn.dataset.original = yesBtn.textContent;
+    yesBtn.textContent = yesBtn.dataset.original + ' again';
+    for (let i = 0; i < 12; i++) setTimeout(spawnHeart, i * 80);
+  }
+
+  let noCount = 0;
+  const noTeases = [
+    "No? Are you sure? 🥺",
+    "The No button is shy, just like you. 💕",
+    "You can't catch me! Try again! 😜",
+    "No doesn't work here, only YES. 😤",
+    "Nice try Myka, but I'm faster. 💨",
+    "Still no? The PRESS ME button is getting lonely... 💔",
+    "Okay okay, just press YES already! 🙏",
+  ];
+  function rectsOverlap(a, b) {
+    return !(a.right < b.left || a.left > b.right || a.bottom < b.top || a.top > b.bottom);
+  }
+  function runAway() {
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
+    const card = noBtn.parentElement;
+    // Switch No to absolute positioning so it can move freely
+    noBtn.style.position = 'absolute';
+    const cardRect = card.getBoundingClientRect();
+    const yesRect = yesBtn.getBoundingClientRect();
+    const maxX = cardRect.width - noBtn.offsetWidth - 10;
+    const maxY = Math.max(80, cardRect.height - noBtn.offsetHeight - 10);
+    // Try up to 30 times to find a spot that doesn't overlap PRESS ME
+    let newX, newY, tries = 0, noRect;
+    do {
+      newX = Math.max(10, Math.random() * maxX);
+      newY = Math.max(10, Math.random() * maxY);
+      noRect = {
+        left: cardRect.left + newX,
+        right: cardRect.left + newX + noBtn.offsetWidth,
+        top: cardRect.top + newY,
+        bottom: cardRect.top + newY + noBtn.offsetHeight,
+      };
+      tries++;
+    } while (rectsOverlap(noRect, yesRect) && tries < 30);
+    noBtn.style.left = newX + 'px';
+    noBtn.style.top = newY + 'px';
+    const scale = 1 + (noCount + 1) * 0.25;
+    yesBtn.style.transform = `scale(${scale})`;
+    yesBtn.style.fontSize = (1 + (noCount + 1) * 0.1) + 'rem';
+    yesBtn.style.padding = `${12 + (noCount + 1) * 4}px ${24 + (noCount + 1) * 6}px`;
+    document.getElementById('noMsg').textContent = noTeases[Math.min(noCount, noTeases.length - 1)];
+    noCount++;
+    spawnHeart();
+  }
+
+  // ambient hearts
+  setInterval(() => { if (Math.random() < 0.3) spawnHeart(); }, 2000);
+</script>
+</body>
+</html>
