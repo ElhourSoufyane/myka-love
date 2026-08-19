@@ -213,11 +213,11 @@
   }
 
   // Game
-  let score = 0, timeLeft = 20, gameTimer = null, spawnTimer = null, playing = false;
+  let score = 0, hearts = 0, money = 0, timeLeft = 20, gameTimer = null, spawnTimer = null, playing = false;
   function startGame() {
     if (playing) return;
     playing = true;
-    score = 0; timeLeft = 20;
+    score = 0; hearts = 0; money = 0; timeLeft = 20;
     const area = document.getElementById('gameArea');
     area.innerHTML = '';
     updateScore();
@@ -237,24 +237,43 @@
     const area = document.getElementById('gameArea');
     const t = document.createElement('div');
     t.className = 'target';
-    t.textContent = ['❤️','💖','💕','💗'][Math.floor(Math.random()*4)];
+    // 60% hearts, 40% money
+    const isMoney = Math.random() < 0.4;
+    t.textContent = isMoney
+      ? ['💵','💰','💸','🤑'][Math.floor(Math.random()*4)]
+      : ['❤️','💖','💕','💗'][Math.floor(Math.random()*4)];
+    t.dataset.type = isMoney ? 'money' : 'heart';
     const size = 30 + Math.random() * 30;
     t.style.fontSize = size + 'px';
     t.style.left = Math.random() * (area.clientWidth - size) + 'px';
     t.style.top = Math.random() * (area.clientHeight - size) + 'px';
-    t.onclick = () => { score++; updateScore(); t.remove(); spawnHeart(); };
+    t.onclick = () => {
+      score++;
+      if (isMoney) money++; else hearts++;
+      updateScore();
+      t.remove();
+      spawnHeart();
+    };
     area.appendChild(t);
     setTimeout(() => { if (t.parentNode) t.remove(); }, 1500);
   }
   function updateScore() {
-    document.getElementById('score').textContent = `Score: ${score} | Time: ${timeLeft}s`;
+    document.getElementById('score').textContent = `Score: ${score} | ❤️ ${hearts} | 💰 ${money} | Time: ${timeLeft}s`;
   }
   function endGame() {
     playing = false;
     clearInterval(gameTimer);
     clearTimeout(spawnTimer);
     const area = document.getElementById('gameArea');
-    area.innerHTML = `<div style="padding-top:140px;font-size:1.4rem;font-weight:bold;">Game Over! 💖<br>Score: ${score}<br>${score >= 15 ? "WOW you're a heart-catcher! 😍" : score >= 8 ? "Nice! She'd be proud. 💕" : "Cute. Try again for her. 💪"}</div>`;
+    let verdict;
+    if (money > hearts) {
+      verdict = `<div style="font-size:2rem;font-weight:bold;color:#c2185b;line-height:1.3;">YOOO you love money more than me?! 😱💔</div>`;
+    } else if (hearts > money) {
+      verdict = `<div style="font-size:1.6rem;font-weight:bold;color:#c2185b;line-height:1.3;">awwww you love me more than money 🥹❤️<br>i love you too Myka 💕<br>dont worry i will give you the money 💰😘</div>`;
+    } else {
+      verdict = `<div style="font-size:1.4rem;font-weight:bold;color:#c2185b;">It's a tie! You love me AND money equally 😂💕</div>`;
+    }
+    area.innerHTML = `<div style="padding-top:60px;font-size:1.4rem;font-weight:bold;">Game Over! 💖<br>Hearts: ${hearts} ❤️ | Money: ${money} �<br><br>${verdict}</div>`;
   }
 
   function bigButton() {
@@ -266,8 +285,8 @@
       "I love you even when I'm hungry. That's TRUE love. 🍕",
       "Kanbghik bzaf 🇲🇦 — (I love you so much, in Darija)",
       "Mahal kita 🇵🇭 — (I love you, in Tagalog)",
-      "Ang ganda mo talaga, parang hindi ka na nangangailangan ng filter. Ikaw na ang original masterpiece. ",
-      "Kahit ang araw nagtatago kapag nakangiti ka — kasi mas maliwanag ka pa sa kanya. Mahal na mahal kita. ☀️",
+      "Ang ganda mo talaga, parang hindi ka na nangangailangan ng filter. Ikaw na ang original masterpiece. �🇵🇭",
+      "Kahit ang araw nagtatago kapag nakangiti ka — kasi mas maliwanag ka pa sa kanya. Mahal na mahal kita. ☀️🇵🇭",
     ];
     document.getElementById('bigMsg').textContent = msgs[Math.floor(Math.random() * msgs.length)];
     // Reset PRESS ME button to original size
